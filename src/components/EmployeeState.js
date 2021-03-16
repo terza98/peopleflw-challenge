@@ -1,4 +1,5 @@
 import { Box, Flex, Text } from '@chakra-ui/layout';
+import { useEffect, useState } from 'react';
 import { updateEmployeeState } from '../api/authService';
 
 const boxStyles = {
@@ -21,49 +22,56 @@ const STATES = {
   INACTIVE: 'INACTIVE',
 };
 export default function EmployeeState({ id, currentState }) {
+  const [activeState, setActiveState] = useState(undefined);
+
+  useEffect(() => {
+    activeState === undefined && setActiveState(currentState);
+  }, [activeState, currentState]);
+
   const handleStateSelect = stateName => {
     updateEmployeeState(id, stateName)
-      .then(res => console.log(res))
+      .then(() => setActiveState(stateName))
       .catch(err => console.error(err));
   };
+
   return (
     <Flex>
       <Box
         {...boxStyles}
-        bg={currentState === STATES.ADDED && '#1D5AD4'}
-        color={currentState === STATES.ADDED && 'white'}
+        bg={activeState === STATES.ADDED && '#1D5AD4'}
+        color={activeState === STATES.ADDED && 'white'}
         onClick={() => handleStateSelect(STATES.ADDED)}
       >
         <Text {...textStyles}>{STATES.ADDED}</Text>
       </Box>
       <Box
         {...boxStyles}
-        bg={currentState === STATES.IN_CHECK && '#1D5AD4'}
-        color={currentState === STATES.IN_CHECK && 'white'}
+        bg={activeState === STATES.IN_CHECK && '#1D5AD4'}
+        color={activeState === STATES.IN_CHECK && 'white'}
         onClick={() => handleStateSelect(STATES.IN_CHECK)}
       >
         <Text {...textStyles}>{STATES.IN_CHECK}</Text>
       </Box>
       <Box
         {...boxStyles}
-        bg={currentState === STATES.APPROVED && '#1D5AD4'}
-        color={currentState === STATES.APPROVED && 'white'}
+        bg={activeState === STATES.APPROVED && '#1D5AD4'}
+        color={activeState === STATES.APPROVED && 'white'}
         onClick={() => handleStateSelect(STATES.APPROVED)}
       >
         <Text {...textStyles}>{STATES.APPROVED}</Text>
       </Box>
       <Box
         {...boxStyles}
-        bg={currentState === STATES.ACTIVE && '#1D5AD4'}
-        color={currentState === STATES.ACTIVE && 'white'}
+        bg={activeState === STATES.ACTIVE && '#1D5AD4'}
+        color={activeState === STATES.ACTIVE && 'white'}
         onClick={() => handleStateSelect(STATES.ACTIVE)}
       >
         <Text {...textStyles}>{STATES.ACTIVE}</Text>
       </Box>
       <Box
         {...boxStyles}
-        bg={currentState === STATES.INACTIVE && '#1D5AD4'}
-        color={currentState === STATES.INACTIVE && 'white'}
+        bg={activeState === STATES.INACTIVE && '#1D5AD4'}
+        color={activeState === STATES.INACTIVE && 'white'}
         onClick={() => handleStateSelect(STATES.INACTIVE)}
       >
         <Text {...textStyles}>{STATES.INACTIVE}</Text>
