@@ -45,7 +45,7 @@ export default function EmployeeList({ ...rest }) {
   return (
     <Box {...rest} textAlign="center">
       <form onSubmit={e => onSubmit(e)}>
-        <Flex mb={10} align="center" justify="center">
+        <Flex mb={10} align="center" justify="end">
           <Text>Add new employee:</Text>
           <Input
             width="200px"
