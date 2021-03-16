@@ -10,6 +10,10 @@ export const addNewEmployee = name => {
   return axios.post(API_URL + `employees`, { name });
 };
 
+export const deleteEmployee = id => {
+  return axios.delete(API_URL + `employees/${id}`);
+};
+
 export const updateEmployeeState = (id, stateName) => {
   return axios.put(API_URL + `employees/${id}`, { state: stateName });
 };

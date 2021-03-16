@@ -2,7 +2,11 @@ import { Button } from '@chakra-ui/button';
 import { Input } from '@chakra-ui/input';
 import { Box, Flex, Text } from '@chakra-ui/layout';
 import { useEffect, useState } from 'react';
-import { addNewEmployee, getAllEmployees } from '../api/authService';
+import {
+  addNewEmployee,
+  deleteEmployee,
+  getAllEmployees,
+} from '../api/authService';
 import EmployeeState from './EmployeeState';
 
 const spanStyles = {
@@ -16,17 +20,32 @@ export default function EmployeeList({ ...rest }) {
 
   //on page mount load all employees
   useEffect(() => {
-    getAllEmployees().then(res => setEmployees(res.data));
-  }, []);
+    if (employees.length === 0)
+      getAllEmployees().then(res => setEmployees(res.data));
+  }, [employees]);
 
   const onSubmit = e => {
     e.preventDefault();
-    addNewEmployee(newEmployeeName).then(res => console.log(res));
+    addNewEmployee(newEmployeeName).then(res => {
+      let newEmployees = [...employees, res.data];
+      setEmployees(newEmployees);
+    });
   };
+
+  const handleDeleteEmployee = (id, index) => {
+    deleteEmployee(id).then(res => {
+      let newEmployees = [...employees];
+      if (index !== -1) {
+        newEmployees.splice(index, 1);
+      }
+      setEmployees(newEmployees);
+    });
+  };
+
   return (
     <Box {...rest} textAlign="center">
-      <Flex mb={10} align="center" justify="center">
-        <form onSubmit={e => onSubmit(e)}>
+      <form onSubmit={e => onSubmit(e)}>
+        <Flex mb={10} align="center" justify="center">
           <Text>Add new employee:</Text>
           <Input
             width="200px"
@@ -38,16 +57,16 @@ export default function EmployeeList({ ...rest }) {
           <Button ml={10} type="submit">
             ADD
           </Button>
-        </form>
-      </Flex>
+        </Flex>
+      </form>
       {employees.length === 0 && (
         <Box textAlign="center">
           <Text>There are no existing employees</Text>
         </Box>
       )}
-      {employees?.map(employee => (
-        <Box key={employee.id} my={18}>
-          <Flex>
+      {employees?.map((employee, index) => (
+        <Box key={employee.id} my={20}>
+          <Flex align="center" mb={4}>
             <Text>
               ID:
               <Text {...spanStyles}>{employee.id}</Text>
@@ -60,6 +79,12 @@ export default function EmployeeList({ ...rest }) {
               CREATED AT:
               <Text {...spanStyles}>{employee.createdAt}</Text>
             </Text>
+            <Button
+              ml={20}
+              onClick={() => handleDeleteEmployee(employee.id, index)}
+            >
+              Delete this employee
+            </Button>
           </Flex>
           <EmployeeState id={employee.id} currentState={employee.state} />
         </Box>
