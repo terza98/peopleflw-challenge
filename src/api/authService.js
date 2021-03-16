@@ -6,6 +6,10 @@ export const getAllEmployees = () => {
   return axios.get(API_URL + 'employees');
 };
 
+export const addNewEmployee = name => {
+  return axios.post(API_URL + `employees`, { name });
+};
+
 export const updateEmployeeState = (id, stateName) => {
   return axios.put(API_URL + `employees/${id}`, { state: stateName });
 };
